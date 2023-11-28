@@ -1,3 +1,8 @@
-﻿string[] colors = {"Green", "Red", "Blue"};
-Array.Sort(colors);
-foreach (string color in colors) Console.WriteLine(color + " ");
+﻿using NutshellConsole.Ch7;
+
+var bank = new Bank();
+
+foreach (var c in bank)
+{
+    Console.WriteLine(c.Name);
+}
