@@ -1,4 +1,5 @@
 ﻿using NutshellConsole.Ch7;
+using NutshellConsole.LearnLinq;
 
 var customers = new List<Customer>
 {
@@ -11,10 +12,9 @@ var customers = new List<Customer>
     new Customer(7, "Kate", "EastVale")
 };
 
-var query = from c in customers
-    where c.Address == "EastVale"
-    orderby c.Name
-    select c;
+var query = customers
+    .MyWhere(c => c.Address == "EastVale")
+    .OrderBy(c => c.Name);
 
 foreach (var c in query)
 {
