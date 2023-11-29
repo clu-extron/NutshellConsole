@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using NutshellConsole.LearnLinq;
 
-List<Car> cars = ProcessCars("../../Files/CSV/fuel.csv");
+List<Car> cars = ProcessCars("C:/Learn/Files/CSV/fuel.csv");
 
 List<Car> ProcessCars(string v)
 {
