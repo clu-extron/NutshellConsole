@@ -1,24 +1,30 @@
-﻿using NutshellConsole.Ch7;
+﻿using System.Runtime.CompilerServices;
 using NutshellConsole.LearnLinq;
 
-var customers = new List<Customer>
-{
-    new Customer(1, "Andrew", "EastVale"),
-    new Customer(2, "Greg", "Corona"),
-    new Customer(3, "Jimmy", "Sherman Oaks"),
-    new Customer(4, "Mark", "Burbank"),
-    new Customer(5, "Boris", "Fremont"),
-    new Customer(6, "Eric", "EastVale"),
-    new Customer(7, "Kate", "EastVale")
-};
+List<Car> cars = ProcessCars("../../Files/CSV/fuel.csv");
 
-var query = customers
-    .MyWhere(c => c.Address == "EastVale")
-    .OrderBy(c => c.Name);
-
-foreach (var c in query)
+List<Car> ProcessCars(string v)
 {
-    Console.WriteLine($"Customer: {c.Id}, {c.Name}, {c.Address}");
+    var result = File.ReadAllLines(v)
+        .Skip(1)
+        .Where(l => l.Length > 1)
+        .Select(line =>
+        {
+            var columns = line.Split(",");
+            return new Car
+            {
+                Year = columns[0],
+                Manufacturer = columns[1],
+                Model = columns[2],
+                Displacement = double.Parse(columns[3]),
+                CylindersCount = int.Parse(columns[4]),
+                City = int.Parse(columns[5]),
+                Highway = int.Parse(columns[6]),
+                Combined = int.Parse(columns[7])
+            };
+        });
+
+    return result.ToList();
 }
 
 Console.Read();
