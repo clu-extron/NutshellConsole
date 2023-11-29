@@ -3,6 +3,20 @@ using NutshellConsole.LearnLinq;
 
 List<Car> cars = ProcessCars("C:/Learn/Files/CSV/fuel.csv");
 
+//var query = cars
+//    .OrderByDescending(c => c.Combined)
+//    .ThenByDescending(c => c.Model);
+
+var query = from car in cars
+            where car.Manufacturer == "BMW" && car.Year == "2016"
+            orderby car.Combined descending, car.Model descending
+            select car;
+
+foreach (var c in query.Take(10))
+{
+    Console.WriteLine($"{c.Model} {c.Combined}");
+}
+
 List<Car> ProcessCars(string v)
 {
     var result = File.ReadAllLines(v)
