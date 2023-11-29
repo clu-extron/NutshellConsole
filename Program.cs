@@ -1,33 +1,40 @@
-﻿using NutshellConsole.Ch7;
-using System.Collections;
+﻿using NutshellConsole.LearnLinq;
+using System.Linq;
 
-static Dictionary<int, Customer> GetCustomersDictionary(int count)
+string path = @"c:\windows";
+ShowLargestFiles(path);
+Console.WriteLine("******************************************");
+Console.WriteLine("******************************************");
+ShowLargestFilesWithLinq(path);
+
+void ShowLargestFiles(string path)
 {
-    var customers = new Dictionary<int, Customer>();
-    for (int i = 0; i < count; i++)
+    DirectoryInfo directory = new DirectoryInfo(path);
+    FileInfo[] files = directory.GetFiles();
+    Array.Sort(files, new FileInfoComparer());
+
+    //foreach (var f in files)
+    //{
+    //    Console.WriteLine($"{f.Name, -20} : {f.Length, 10:N}");
+    //}
+
+    for (int i = 0; i < 5; i++)
     {
-        customers.Add(i, new Customer(i, $"Alex{i}", $"Location{i}"));
+        var f = files[i];
+        Console.WriteLine($"{f.Name,-20} : {f.Length,10:N}");
     }
-    return customers;
 }
 
-static Hashtable GetCustomersHashTable(int count)
+void ShowLargestFilesWithLinq(string path)
 {
-    var customers = new Hashtable();
-    for (int i = 0; i < count; i++)
+    var query = from file in new DirectoryInfo(path).GetFiles() 
+                orderby file.Length descending 
+                select file;
+
+    foreach (var f in query.Take(5))
     {
-        customers.Add(i, new Customer(i, $"Alex{i}", $"Location{i}"));
+        Console.WriteLine($"{f.Name,-20} : {f.Length,10:N}");
     }
-    return customers;
 }
-
-//var customers = GetCustomersDictionary(1000000);
-//var target = customers[99999];
-//Console.WriteLine($"Customer ID {target.Id}, Customer Name: {target.Name}");
-
-// HashTable
-var customers = GetCustomersHashTable(1000000);
-var target = (Customer)customers[99999];
-Console.WriteLine($"Customer ID {target.Id}, Customer Name: {target.Name}");
 
 Console.Read();
