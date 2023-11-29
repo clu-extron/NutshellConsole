@@ -27,11 +27,21 @@ void ShowLargestFiles(string path)
 
 void ShowLargestFilesWithLinq(string path)
 {
-    var query = from file in new DirectoryInfo(path).GetFiles() 
-                orderby file.Length descending 
-                select file;
+    //var query = from file in new DirectoryInfo(path).GetFiles() 
+    //            orderby file.Length descending 
+    //            select file;
 
-    foreach (var f in query.Take(5))
+    //foreach (var f in query.Take(5))
+    //{
+    //    Console.WriteLine($"{f.Name,-20} : {f.Length,10:N}");
+    //}
+
+    // Linq + Lambda
+    var query = new DirectoryInfo(path).GetFiles()
+        .OrderByDescending(f => f.Length)
+        .Take(5);
+
+    foreach (var f in query)
     {
         Console.WriteLine($"{f.Name,-20} : {f.Length,10:N}");
     }
