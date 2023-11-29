@@ -1,51 +1,24 @@
-﻿using NutshellConsole.LearnLinq;
-using System.Linq;
+﻿using NutshellConsole.Ch7;
 
-string path = @"c:\windows";
-ShowLargestFiles(path);
-Console.WriteLine("******************************************");
-Console.WriteLine("******************************************");
-ShowLargestFilesWithLinq(path);
-
-void ShowLargestFiles(string path)
+var customers = new List<Customer>
 {
-    DirectoryInfo directory = new DirectoryInfo(path);
-    FileInfo[] files = directory.GetFiles();
-    Array.Sort(files, new FileInfoComparer());
+    new Customer(1, "Andrew", "EastVale"),
+    new Customer(2, "Greg", "Corona"),
+    new Customer(3, "Jimmy", "Sherman Oaks"),
+    new Customer(4, "Mark", "Burbank"),
+    new Customer(5, "Boris", "Fremont"),
+    new Customer(6, "Eric", "EastVale"),
+    new Customer(7, "Kate", "EastVale")
+};
 
-    //foreach (var f in files)
-    //{
-    //    Console.WriteLine($"{f.Name, -20} : {f.Length, 10:N}");
-    //}
+var query = from c in customers
+    where c.Address == "EastVale"
+    orderby c.Name
+    select c;
 
-    for (int i = 0; i < 5; i++)
-    {
-        var f = files[i];
-        Console.WriteLine($"{f.Name,-20} : {f.Length,10:N}");
-    }
-}
-
-void ShowLargestFilesWithLinq(string path)
+foreach (var c in query)
 {
-    //var query = from file in new DirectoryInfo(path).GetFiles() 
-    //            orderby file.Length descending 
-    //            select file;
-
-    //foreach (var f in query.Take(5))
-    //{
-    //    Console.WriteLine($"{f.Name,-20} : {f.Length,10:N}");
-    //}
-
-    // Linq + Lambda
-    var query = new DirectoryInfo(path).GetFiles()
-        .OrderByDescending(f => f.Length)
-        .Where(f => f.Name.StartsWith("b"))
-        .Take(5);
-
-    foreach (var f in query)
-    {
-        Console.WriteLine($"{f.Name,-20} : {f.Length,10:N}");
-    }
+    Console.WriteLine($"Customer: {c.Id}, {c.Name}, {c.Address}");
 }
 
 Console.Read();
