@@ -39,6 +39,7 @@ void ShowLargestFilesWithLinq(string path)
     // Linq + Lambda
     var query = new DirectoryInfo(path).GetFiles()
         .OrderByDescending(f => f.Length)
+        .Where(f => f.Name.StartsWith("b"))
         .Take(5);
 
     foreach (var f in query)
