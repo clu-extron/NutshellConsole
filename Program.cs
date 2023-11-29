@@ -17,6 +17,13 @@ foreach (var c in query.Take(10))
     Console.WriteLine($"{c.Model} {c.Combined}");
 }
 
+Console.WriteLine("*************************************");
+Console.WriteLine("*************************************");
+
+// Any()
+var query2 = cars.Any(c => c.Manufacturer == "Volkswagen");
+Console.WriteLine(query2);
+
 List<Car> ProcessCars(string v)
 {
     var result = File.ReadAllLines(v)
