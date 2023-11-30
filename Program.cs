@@ -4,49 +4,32 @@ using NutshellConsole.LearnLinq;
 List<Car> cars = ProcessCars("C:/Learn/Files/CSV/fuel.csv");
 List<Manufacturer> manufacturers = ProcessManufacturers("C:/Learn/Files/CSV/manufacturer.csv");
 
-//var query = cars
-//    .OrderByDescending(c => c.Combined)
-//    .ThenByDescending(c => c.Model);
+var query = from car in cars
+    group car by car.Manufacturer into manufacturerGroup 
+    orderby manufacturerGroup.Key descending 
+    select manufacturerGroup;
 
-var query = (from car in cars
-    join manufacturer in manufacturers on car.Manufacturer equals manufacturer.Name
-    orderby car.Combined descending, car.Model descending
-    select new
-    {
-        Manufacturer = car.Manufacturer,
-        Model = car.Model,
-        Combined = car.Combined,
-        Headquarters = manufacturer.Headquarters,
-        Phone = manufacturer.Phone
-    })
-    .Take(10);
+var query2 = cars.GroupBy(c => c.Manufacturer).OrderByDescending(g => g.Key);
 
-var query2 = cars.Join(manufacturers, (c) => c.Manufacturer, m => m.Name, (c,m) => new
+foreach (var group in query)
 {
-    Car = c,
-    Manufacturer = m
-}).OrderByDescending(joinData => joinData.Car.Combined)
-    .ThenBy(joinData => joinData.Car.Model)
-    .Select(joinData => new
+    Console.WriteLine($"{group.Key} has {group.Count()} models of cars.");
+    foreach (var car in group.OrderByDescending(c => c.Combined).Take(2))
     {
-        Manufacturer = joinData.Car.Manufacturer,
-        Model = joinData.Car.Model,
-        Combined = joinData.Car.Combined,
-        Headquarters = joinData.Manufacturer.Headquarters,
-        Phone = joinData.Manufacturer.Phone
-    }).Take(10);
-
-foreach (var item in query)
-{
-    Console.WriteLine($"{item.Manufacturer} {item.Model} {item.Combined} {item.Headquarters} {item.Phone}");
+        Console.WriteLine($"\t {car.Model} {car.Combined}");
+    }
 }
 
-Console.WriteLine("**************************************************************************************");
-Console.WriteLine("**************************************************************************************");
+Console.WriteLine("***************************************************************************");
+Console.WriteLine("***************************************************************************");
 
-foreach (var item in query2)
+foreach (var group in query2)
 {
-    Console.WriteLine($"{item.Manufacturer} {item.Model} {item.Combined} {item.Headquarters} {item.Phone}");
+    Console.WriteLine($"{group.Key} has {group.Count()} models of cars.");
+    foreach (var car in group.OrderByDescending(c => c.Combined).Take(2))
+    {
+        Console.WriteLine($"\t {car.Model} {car.Combined}");
+    }
 }
 
 List<Car> ProcessCars(string v)
@@ -55,21 +38,6 @@ List<Car> ProcessCars(string v)
         .Skip(1)
         .Where(l => l.Length > 1)
         .ToCar();
-        //.Select(line =>
-        //{
-        //    var columns = line.Split(",");
-        //    return new Car
-        //    {
-        //        Year = columns[0],
-        //        Manufacturer = columns[1],
-        //        Model = columns[2],
-        //        Displacement = double.Parse(columns[3]),
-        //        CylindersCount = int.Parse(columns[4]),
-        //        City = int.Parse(columns[5]),
-        //        Highway = int.Parse(columns[6]),
-        //        Combined = int.Parse(columns[7])
-        //    };
-        //});
 
     return result.ToList();
 }
