@@ -1,36 +1,26 @@
-﻿CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-Thread thread = new Thread(PrintHello);
-thread.Start();
-
-//// 将主线程和子线程绑定起来, 主线程会被挂起,
-//// 等待子线程执行完毕后, 主线程会接收到子线程执行完毕的通知, 继续执行
-//thread.Join();
-
-bool check = true;
-while (check)
+﻿namespace NutshellConsole
 {
-    if (thread.IsAlive)
+    class Program
     {
-        Console.WriteLine("child tread RUNNING");
-        Thread.Sleep(100);
-    }
-    else
-    {
-        Console.WriteLine("child thread COMPLETE");
-        check = false;
-    }
-}
+        static object lockedObj = new object();
 
+        static void Main(string[] args)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var thread = new Thread(AddText);
+                thread.Start();
+            }
+        }
 
-Console.WriteLine("Exit Main Program");
-
-void PrintHello(object obj)
-{
-    int i = 0;
-    while (i++ < 10)
-    {
-        Thread.Sleep(new Random().Next(100, 1000));
-        Console.WriteLine("Hello from PrintHello");
+        static void AddText()
+        {
+            lock (lockedObj)
+            {
+                File.AppendAllText(@"C:\Learn\Files\Test\test.txt", $"START_{Thread.CurrentThread.ManagedThreadId} ");
+                Thread.Sleep(100);
+                File.AppendAllText(@"C:\Learn\Files\Test\test.txt", $"END_{Thread.CurrentThread.ManagedThreadId} ");
+            }
+        }
     }
 }
