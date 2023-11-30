@@ -1,20 +1,16 @@
-﻿Thread thread = new Thread(() =>
-{
-    Print1();
-});
+﻿Thread thread = new Thread(PrintHello);
+
+// Switch to back-end thread
+//thread.IsBackground = true;
 thread.Start();
 
-for (int i=0; i<1000; i++)
-{
-    Console.Write(0);
-}
+Console.WriteLine("End of Main Program");
 
-static void Print1()
+void PrintHello(object? obj)
 {
-    for (int i = 0; i < 1000; i++)
+    while (true)
     {
-        Console.Write(1);
+        Thread.Sleep(1000);
+        Console.WriteLine("Hello from PrintHello");
     }
 }
-
-Console.Read();
