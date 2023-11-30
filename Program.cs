@@ -2,33 +2,52 @@
 using NutshellConsole.LearnLinq;
 
 List<Car> cars = ProcessCars("C:/Learn/Files/CSV/fuel.csv");
+List<Manufacturer> manufacturers = ProcessManufacturers("C:/Learn/Files/CSV/manufacturer.csv");
 
 //var query = cars
 //    .OrderByDescending(c => c.Combined)
 //    .ThenByDescending(c => c.Model);
 
 var query = (from car in cars
-    where car.Manufacturer == "BMW" && car.Year == "2016"
+    join manufacturer in manufacturers on car.Manufacturer equals manufacturer.Name
     orderby car.Combined descending, car.Model descending
     select new
     {
+        Manufacturer = car.Manufacturer,
         Model = car.Model,
-        Combined = car.Combined
-    }).FirstOrDefault();
+        Combined = car.Combined,
+        Headquarters = manufacturer.Headquarters,
+        Phone = manufacturer.Phone
+    })
+    .Take(10);
 
-//foreach (var c in query.Take(10))
-//{
-//    Console.WriteLine($"{c.Model} {c.Combined}");
-//}
+var query2 = cars.Join(manufacturers, (c) => c.Manufacturer, m => m.Name, (c,m) => new
+{
+    Car = c,
+    Manufacturer = m
+}).OrderByDescending(joinData => joinData.Car.Combined)
+    .ThenBy(joinData => joinData.Car.Model)
+    .Select(joinData => new
+    {
+        Manufacturer = joinData.Car.Manufacturer,
+        Model = joinData.Car.Model,
+        Combined = joinData.Car.Combined,
+        Headquarters = joinData.Manufacturer.Headquarters,
+        Phone = joinData.Manufacturer.Phone
+    }).Take(10);
 
-Console.WriteLine($"{query?.Model} {query?.Combined}");
+foreach (var item in query)
+{
+    Console.WriteLine($"{item.Manufacturer} {item.Model} {item.Combined} {item.Headquarters} {item.Phone}");
+}
 
-Console.WriteLine("*************************************");
-Console.WriteLine("*************************************");
+Console.WriteLine("**************************************************************************************");
+Console.WriteLine("**************************************************************************************");
 
-// Any()
-var query2 = cars.Any(c => c.Manufacturer == "Volkswagen");
-Console.WriteLine(query2);
+foreach (var item in query2)
+{
+    Console.WriteLine($"{item.Manufacturer} {item.Model} {item.Combined} {item.Headquarters} {item.Phone}");
+}
 
 List<Car> ProcessCars(string v)
 {
@@ -55,14 +74,22 @@ List<Car> ProcessCars(string v)
     return result.ToList();
 }
 
-Console.WriteLine("*************************************");
-Console.WriteLine("*************************************");
-
-// SelectMany
-var query3 = cars.Select(c => c.Model);
-foreach (var c in query3)
+List<Manufacturer> ProcessManufacturers(string v)
 {
-    Console.WriteLine(c); 
+    var result = File.ReadLines(v)
+        .Skip(1)
+        .Where(l => l.Length > 1)
+        .Select(line =>
+        {
+            var columns = line.Split(",");
+            return new Manufacturer
+            {
+                Name = columns[0],
+                Headquarters = columns[1],
+                Phone = columns[2]
+            };
+        });
+    return result.ToList();
 }
 
 Console.Read();
