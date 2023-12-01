@@ -24,21 +24,29 @@
             {
                 return Calculate1();
             });
-            var task2 = Task.Run(() =>
-            {
-                return Calculate2();
-            });
-
-            Task.WaitAll(task1, task2);
 
             var awaiter1 = task1.GetAwaiter();
-            var awaiter2 = task2.GetAwaiter();
 
-            var result1 = awaiter1.GetResult();
-            var result2 = awaiter2.GetResult();
+            awaiter1.OnCompleted(() =>
+            {
+                var result1 = awaiter1.GetResult();
 
-            var result = Calculate3(result1, result2);
-            Console.WriteLine(result);
+                var task2 = Task.Run(() =>
+                {
+                    return Calculate2(result1);
+                });
+
+                var awaiter2 = task2.GetAwaiter();
+
+                awaiter2.OnCompleted(() =>
+                {
+                    var result2 = awaiter2.GetResult();
+                    var task3 = Task.Run(() =>
+                    {
+                        Calculate3(result1, result2);
+                    });
+                });
+            });
         }
 
         static int Calculate1()
@@ -49,9 +57,9 @@
             return result;
         }
 
-        static int Calculate2()
+        static int Calculate2(int a)
         {
-            var result = 4;
+            var result = a + 4;
             Console.WriteLine($"Calculate2； {result}");
             Thread.Sleep(3000);
             return result;
