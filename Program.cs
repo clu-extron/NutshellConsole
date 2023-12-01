@@ -5,7 +5,7 @@ namespace NutshellConsole
     class Program
     {
         /// <summary>
-        /// 异步不是多线程，异步用于处理并行，多线程用于处理并发 Task vs. Thread
+        /// 异步不是多线程，异步用于处理Parallelism，多线程用于处理Concurrency Task vs. Thread
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
