@@ -1,47 +1,54 @@
-﻿namespace NutshellConsole
+﻿using System.Diagnostics;
+
+namespace NutshellConsole
 {
     class Program
     {
         /// <summary>
-        /// 我们用异步来处理并行，用多线程来处理并发。异步的性能会比多线程高出不少
+        /// 异步不是多线程，异步用于处理并行，多线程用于处理并发 Task vs. Thread
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            CalculateAsync();
-            Console.Read();
+            //TaskTest();
+            //ThreadTest();
+            DoSomething();
+            Console.WriteLine("Main Program End");
         }
 
-        static async void CalculateAsync()
+        static void DoSomething()
         {
-            var result1 = await Calculate1Async();
-            var result2 = await Calculate2Async(result1);
-            var result = await Calculate3Async(result1, result2);
-            Console.WriteLine(result);
+            Console.WriteLine("Async task begins!");
+            Task.Delay(60000).Wait();
+            Console.WriteLine("Async task ends");
         }
 
-        static async Task<int> Calculate1Async()
+        static void TaskTest()
         {
-            var result = 3;
-            Console.WriteLine($"Calculate1； {result}");
-            await Task.Delay(3000);
-            return result;
+            var sw = new Stopwatch();
+            sw.Start();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Task.Factory.StartNew(() => { });
+            }
+
+            sw.Stop();
+            Console.WriteLine($"Task {sw.ElapsedMilliseconds}");
         }
 
-        static async Task<int> Calculate2Async(int a)
+        static void ThreadTest()
         {
-            var result = a + 3;
-            Console.WriteLine($"Calculate2； {result}");
-            await Task.Delay(2000);
-            return result;
-        }
+            var sw = new Stopwatch();
+            sw.Start();
 
-        static async Task<int> Calculate3Async(int a, int b)
-        {
-            var result = a + b;
-            Console.WriteLine($"Calculate3； {result}");
-            await Task.Delay(1000);
-            return result;
+            for (int i = 0; i < 100; i++)
+            {
+                new Thread(() => { }).Start();
+            }
+
+            sw.Stop();
+            Console.WriteLine($"Thread {sw.ElapsedMilliseconds}");
         }
     }
 }
