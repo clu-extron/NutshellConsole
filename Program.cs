@@ -1,54 +1,29 @@
 ﻿using System.Diagnostics;
+using NutshellConsole.GarbageCollect;
 
 namespace NutshellConsole
 {
     class Program
     {
         /// <summary>
-        /// 异步不是多线程，异步用于处理Parallelism，多线程用于处理Concurrency Task vs. Thread
+        /// 1.一个类只能有一个终结器。
+        /// 2.不能继承或重载终结器。
+        /// 3.不能手动调用终结器。
+        /// 4.终结器不使用修饰符或参数。
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            //TaskTest();
-            //ThreadTest();
             DoSomething();
-            Console.WriteLine("Main Program End");
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            Console.WriteLine("Program terminated.");
         }
 
         static void DoSomething()
         {
-            Console.WriteLine("Async task begins!");
-            Task.Delay(60000).Wait();
-            Console.WriteLine("Async task ends");
-        }
-
-        static void TaskTest()
-        {
-            var sw = new Stopwatch();
-            sw.Start();
-
-            for (int i = 0; i < 100; i++)
-            {
-                Task.Factory.StartNew(() => { });
-            }
-
-            sw.Stop();
-            Console.WriteLine($"Task {sw.ElapsedMilliseconds}");
-        }
-
-        static void ThreadTest()
-        {
-            var sw = new Stopwatch();
-            sw.Start();
-
-            for (int i = 0; i < 100; i++)
-            {
-                new Thread(() => { }).Start();
-            }
-
-            sw.Stop();
-            Console.WriteLine($"Thread {sw.ElapsedMilliseconds}");
+            new SubTest2();
         }
     }
 }
