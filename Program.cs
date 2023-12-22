@@ -1,9 +1,8 @@
-﻿using System.Diagnostics;
-using NutshellConsole.GarbageCollect;
+﻿using NutshellConsole.Models;
 
 namespace NutshellConsole
 {
-    class Program
+    internal class Program
     {
         /// <summary>
         /// Models: map data from our database to application (Source Mapping)
@@ -14,7 +13,22 @@ namespace NutshellConsole
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello C# programmer!");
+            Computer myComputer = new Computer()
+            {
+                Motherboard = "Z690",
+                HasWifi = true,
+                HasLTE = false,
+                ReleaseDate = DateTime.Now,
+                Price = 943.87m,
+                VideoCard = "RTX 4060"
+            };
+
+            Console.WriteLine(myComputer.Motherboard);
+            Console.WriteLine(myComputer.HasWifi);
+            Console.WriteLine(myComputer.HasLTE);
+            Console.WriteLine(myComputer.ReleaseDate);
+            Console.WriteLine(myComputer.Price);
+            Console.WriteLine(myComputer.VideoCard);
         }
 
     }
